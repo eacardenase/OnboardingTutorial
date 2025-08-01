@@ -20,7 +20,13 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    private let emailTextField = CustomTextField(placeholder: "Email")
+    private let emailTextField: UITextField = {
+        let textField = CustomTextField(placeholder: "Email")
+
+        textField.keyboardType = .emailAddress
+
+        return textField
+    }()
 
     private let passwordTextField = CustomTextField(
         placeholder: "Password",
@@ -135,6 +141,13 @@ class LoginController: UIViewController {
         super.viewDidLoad()
 
         configureUI()
+
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        view.addGestureRecognizer(tapGesture)
     }
 
 }
@@ -230,7 +243,9 @@ extension LoginController {
             dontHaveAccountButton.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor,
             ),
-            dontHaveAccountButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dontHaveAccountButton.centerXAnchor.constraint(
+                equalTo: view.centerXAnchor
+            ),
         ])
     }
 
@@ -259,6 +274,10 @@ extension LoginController {
             controller,
             animated: true
         )
+    }
+
+    @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
 
 }

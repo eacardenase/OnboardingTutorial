@@ -21,8 +21,13 @@ class RegistrationController: UIViewController {
     }()
 
     private let fullNametField = CustomTextField(placeholder: "Fullname")
-    private let emailTextField = CustomTextField(placeholder: "Email")
-
+    private let emailTextField: UITextField = {
+        let textField = CustomTextField(placeholder: "Email")
+        
+        textField.keyboardType = .emailAddress
+        
+        return textField
+    }()
     private let passwordTextField = CustomTextField(
         placeholder: "Password",
         isSecure: true
@@ -78,6 +83,13 @@ class RegistrationController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(dismissKeyboard)
+        )
+
+        view.addGestureRecognizer(tapGesture)
 
         configureUI()
     }
@@ -166,6 +178,10 @@ extension RegistrationController {
 
     @objc private func showLoginController(_ sender: UIButton) {
         navigationController?.popViewController(animated: true)
+    }
+
+    @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
+        view.endEditing(true)
     }
 
 }
