@@ -73,6 +73,8 @@ class LoginController: UIViewController {
         return button
     }()
 
+    private let dividerView = DividerView()
+
     private lazy var googleLoginButton: UIButton = {
         let button = UIButton(type: .system)
 
@@ -95,7 +97,37 @@ class LoginController: UIViewController {
         return button
     }()
 
-    private let dividerView = DividerView()
+    private lazy var signUpButton: UIButton = {
+        let button = UIButton()
+
+        let attributedTitle = NSMutableAttributedString(
+            string: "Don't have an account? ",
+            attributes: [
+                .foregroundColor: UIColor.white.withAlphaComponent(0.87),
+                .font: UIFont.boldSystemFont(ofSize: 16),
+            ]
+        )
+
+        attributedTitle.append(
+            NSAttributedString(
+                string: "Sign Up",
+                attributes: [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.boldSystemFont(ofSize: 16),
+                ]
+            )
+        )
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(handleSignUp),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
 
     // MARK: View Lifecycle
 
@@ -119,7 +151,7 @@ extension LoginController {
         gradient.frame = view.frame
         gradient.locations = [0, 1]
         gradient.colors = [
-            UIColor.systemPurple.cgColor, UIColor.systemCyan.cgColor,
+            UIColor.systemPurple.cgColor, UIColor.systemTeal.cgColor,
         ]
 
         view.layer.addSublayer(gradient)
@@ -147,6 +179,7 @@ extension LoginController {
         view.addSubview(iconImageView)
         view.addSubview(stackView)
         view.addSubview(secondStack)
+        view.addSubview(signUpButton)
 
         // iconImageView
         NSLayoutConstraint.activate([
@@ -190,6 +223,14 @@ extension LoginController {
                 equalTo: stackView.trailingAnchor
             ),
         ])
+
+        // signUpButton
+        NSLayoutConstraint.activate([
+            signUpButton.bottomAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+            ),
+            signUpButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+        ])
     }
 
 }
@@ -207,6 +248,10 @@ extension LoginController {
     }
 
     @objc private func handleGoogleLogin(_ sender: UIButton) {
+        print(#function)
+    }
+
+    @objc private func handleSignUp(_ sender: UIButton) {
         print(#function)
     }
 
