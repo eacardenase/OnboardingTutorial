@@ -28,13 +28,45 @@ class LoginController: UIViewController {
     )
 
     private lazy var loginButton: AuthButton = {
-        let button = AuthButton()
+        let button = AuthButton(type: .system)
 
         button.setTitle("Log In", for: .normal)
         button.titleLabel?.font = .boldSystemFont(ofSize: 18)
         button.addTarget(
             self,
             action: #selector(handleLogin),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
+    private lazy var forgotPasswordButton: UIButton = {
+        let button = UIButton()
+
+        let attributedTitle = NSMutableAttributedString(
+            string: "Forgot your password? ",
+            attributes: [
+                .foregroundColor: UIColor.white.withAlphaComponent(0.87),
+                .font: UIFont.boldSystemFont(ofSize: 15),
+            ]
+        )
+
+        attributedTitle.append(
+            NSAttributedString(
+                string: "Get help signing in.",
+                attributes: [
+                    .foregroundColor: UIColor.white,
+                    .font: UIFont.boldSystemFont(ofSize: 15),
+                ]
+            )
+        )
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(
+            self,
+            action: #selector(handlePasswordReset),
             for: .touchUpInside
         )
 
@@ -70,6 +102,7 @@ extension LoginController {
 
         let stackView = UIStackView(arrangedSubviews: [
             emailTextField, passwordTextField, loginButton,
+            forgotPasswordButton,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -116,6 +149,10 @@ extension LoginController {
 extension LoginController {
 
     @objc private func handleLogin(_ sender: UIButton) {
+        print(#function)
+    }
+
+    @objc private func handlePasswordReset(_ sender: UIButton) {
         print(#function)
     }
 
