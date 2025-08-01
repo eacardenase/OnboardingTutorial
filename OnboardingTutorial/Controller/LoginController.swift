@@ -260,7 +260,12 @@ extension LoginController {
     }
 
     @objc private func showPasswordResetController(_ sender: UIButton) {
-        print(#function)
+        let resetPasswordController = ResetPasswordController()
+
+        navigationController?.pushViewController(
+            resetPasswordController,
+            animated: true
+        )
     }
 
     @objc private func handleGoogleLogin(_ sender: UIButton) {
