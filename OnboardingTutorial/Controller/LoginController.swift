@@ -66,7 +66,7 @@ class LoginController: UIViewController {
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.addTarget(
             self,
-            action: #selector(handlePasswordReset),
+            action: #selector(showPasswordResetController),
             for: .touchUpInside
         )
 
@@ -97,7 +97,7 @@ class LoginController: UIViewController {
         return button
     }()
 
-    private lazy var signUpButton: UIButton = {
+    private lazy var dontHaveAccountButton: UIButton = {
         let button = UIButton()
 
         let attributedTitle = NSMutableAttributedString(
@@ -122,7 +122,7 @@ class LoginController: UIViewController {
         button.setAttributedTitle(attributedTitle, for: .normal)
         button.addTarget(
             self,
-            action: #selector(handleSignUp),
+            action: #selector(showSignUpController),
             for: .touchUpInside
         )
 
@@ -145,6 +145,7 @@ extension LoginController {
 
     private func configureUI() {
         navigationController?.navigationBar.barStyle = .black
+        navigationController?.navigationBar.isHidden = true
 
         let gradient = CAGradientLayer()
 
@@ -179,7 +180,7 @@ extension LoginController {
         view.addSubview(iconImageView)
         view.addSubview(stackView)
         view.addSubview(secondStack)
-        view.addSubview(signUpButton)
+        view.addSubview(dontHaveAccountButton)
 
         // iconImageView
         NSLayoutConstraint.activate([
@@ -226,10 +227,10 @@ extension LoginController {
 
         // signUpButton
         NSLayoutConstraint.activate([
-            signUpButton.bottomAnchor.constraint(
+            dontHaveAccountButton.bottomAnchor.constraint(
                 equalTo: view.safeAreaLayoutGuide.bottomAnchor,
             ),
-            signUpButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            dontHaveAccountButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
     }
 
@@ -243,7 +244,7 @@ extension LoginController {
         print(#function)
     }
 
-    @objc private func handlePasswordReset(_ sender: UIButton) {
+    @objc private func showPasswordResetController(_ sender: UIButton) {
         print(#function)
     }
 
@@ -251,8 +252,13 @@ extension LoginController {
         print(#function)
     }
 
-    @objc private func handleSignUp(_ sender: UIButton) {
-        print(#function)
+    @objc private func showSignUpController(_ sender: UIButton) {
+        let controller = RegistrationController()
+
+        navigationController?.pushViewController(
+            controller,
+            animated: true
+        )
     }
 
 }
