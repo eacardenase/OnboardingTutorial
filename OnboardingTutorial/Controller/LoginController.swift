@@ -73,6 +73,28 @@ class LoginController: UIViewController {
         return button
     }()
 
+    private lazy var googleLoginButton: UIButton = {
+        let button = UIButton(type: .system)
+
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(
+            UIImage(resource: .btnGoogleLightPressedIos).withRenderingMode(
+                .alwaysOriginal
+            ),
+            for: .normal
+        )
+        button.setTitle("  Log in with Google", for: .normal)
+        button.setTitleColor(.white, for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 16)
+        button.addTarget(
+            self,
+            action: #selector(handleGoogleLogin),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
+
     private let dividerView = DividerView()
 
     // MARK: View Lifecycle
@@ -106,16 +128,25 @@ extension LoginController {
             emailTextField,
             passwordTextField,
             loginButton,
-            forgotPasswordButton,
-            dividerView,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
         stackView.spacing = 16
 
+        let secondStack = UIStackView(arrangedSubviews: [
+            forgotPasswordButton,
+            dividerView,
+            googleLoginButton,
+        ])
+
+        secondStack.translatesAutoresizingMaskIntoConstraints = false
+        secondStack.axis = .vertical
+        secondStack.spacing = 28
+
         view.addSubview(iconImageView)
         view.addSubview(stackView)
+        view.addSubview(secondStack)
 
         // iconImageView
         NSLayoutConstraint.activate([
@@ -145,6 +176,20 @@ extension LoginController {
                 constant: -32
             ),
         ])
+
+        // secondStack
+        NSLayoutConstraint.activate([
+            secondStack.topAnchor.constraint(
+                equalTo: stackView.bottomAnchor,
+                constant: 24
+            ),
+            secondStack.leadingAnchor.constraint(
+                equalTo: stackView.leadingAnchor
+            ),
+            secondStack.trailingAnchor.constraint(
+                equalTo: stackView.trailingAnchor
+            ),
+        ])
     }
 
 }
@@ -158,6 +203,10 @@ extension LoginController {
     }
 
     @objc private func handlePasswordReset(_ sender: UIButton) {
+        print(#function)
+    }
+
+    @objc private func handleGoogleLogin(_ sender: UIButton) {
         print(#function)
     }
 
