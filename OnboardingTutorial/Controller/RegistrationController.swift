@@ -23,9 +23,9 @@ class RegistrationController: UIViewController {
     private let fullNametField = CustomTextField(placeholder: "Fullname")
     private let emailTextField: UITextField = {
         let textField = CustomTextField(placeholder: "Email")
-        
+
         textField.keyboardType = .emailAddress
-        
+
         return textField
     }()
     private let passwordTextField = CustomTextField(
@@ -101,15 +101,7 @@ class RegistrationController: UIViewController {
 extension RegistrationController {
 
     private func configureUI() {
-        let gradient = CAGradientLayer()
-
-        gradient.frame = view.frame
-        gradient.locations = [0, 1]
-        gradient.colors = [
-            UIColor.systemPurple.cgColor, UIColor.systemTeal.cgColor,
-        ]
-
-        view.layer.addSublayer(gradient)
+        configureGradientBackground()
 
         let stackView = UIStackView(arrangedSubviews: [
             fullNametField,

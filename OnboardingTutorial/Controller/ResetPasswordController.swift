@@ -83,16 +83,8 @@ class ResetPasswordController: UIViewController {
 extension ResetPasswordController {
 
     private func configureUI() {
-        let gradient = CAGradientLayer()
-
-        gradient.frame = view.frame
-        gradient.locations = [0, 1]
-        gradient.colors = [
-            UIColor.systemPurple.cgColor, UIColor.systemTeal.cgColor,
-        ]
-
-        view.layer.addSublayer(gradient)
-
+        configureGradientBackground()
+        
         let stackView = UIStackView(arrangedSubviews: [
             emailTextField,
             resetPasswordButton,
