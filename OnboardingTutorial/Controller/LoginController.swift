@@ -9,6 +9,8 @@ import UIKit
 
 class LoginController: UIViewController {
 
+    // MARK: - Properties
+
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
 
@@ -19,10 +21,25 @@ class LoginController: UIViewController {
     }()
 
     private let emailTextField = CustomTextField(placeholder: "Email")
+
     private let passwordTextField = CustomTextField(
         placeholder: "Password",
         isSecure: true
     )
+
+    private lazy var loginButton: AuthButton = {
+        let button = AuthButton()
+
+        button.setTitle("Log In", for: .normal)
+        button.titleLabel?.font = .boldSystemFont(ofSize: 18)
+        button.addTarget(
+            self,
+            action: #selector(handleLogin),
+            for: .touchUpInside
+        )
+
+        return button
+    }()
 
     // MARK: View Lifecycle
 
@@ -52,7 +69,7 @@ extension LoginController {
         view.layer.addSublayer(gradient)
 
         let stackView = UIStackView(arrangedSubviews: [
-            emailTextField, passwordTextField,
+            emailTextField, passwordTextField, loginButton,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -90,6 +107,16 @@ extension LoginController {
                 constant: -32
             ),
         ])
+    }
+
+}
+
+// MARK: - Actions
+
+extension LoginController {
+
+    @objc private func handleLogin(_ sender: UIButton) {
+        print(#function)
     }
 
 }
