@@ -9,6 +9,15 @@ import UIKit
 
 class LoginController: UIViewController {
 
+    private let iconImageView: UIImageView = {
+        let imageView = UIImageView()
+
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.image = UIImage(resource: .firebaseLogo)
+
+        return imageView
+    }()
+
     // MARK: View Lifecycle
 
     override func viewDidLoad() {
@@ -18,6 +27,8 @@ class LoginController: UIViewController {
     }
 
 }
+
+// MARK: - Helpers
 
 extension LoginController {
 
@@ -33,6 +44,20 @@ extension LoginController {
         ]
 
         view.layer.addSublayer(gradient)
+
+        view.addSubview(iconImageView)
+
+        NSLayoutConstraint.activate([
+            iconImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            iconImageView.heightAnchor.constraint(equalToConstant: 120),
+            iconImageView.widthAnchor.constraint(
+                equalTo: iconImageView.heightAnchor
+            ),
+            iconImageView.topAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.topAnchor,
+                constant: 32
+            ),
+        ])
     }
 
 }
