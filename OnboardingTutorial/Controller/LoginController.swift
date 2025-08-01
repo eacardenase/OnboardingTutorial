@@ -73,6 +73,8 @@ class LoginController: UIViewController {
         return button
     }()
 
+    private let dividerView = DividerView()
+
     // MARK: View Lifecycle
 
     override func viewDidLoad() {
@@ -101,8 +103,11 @@ extension LoginController {
         view.layer.addSublayer(gradient)
 
         let stackView = UIStackView(arrangedSubviews: [
-            emailTextField, passwordTextField, loginButton,
+            emailTextField,
+            passwordTextField,
+            loginButton,
             forgotPasswordButton,
+            dividerView,
         ])
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
