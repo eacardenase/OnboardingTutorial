@@ -18,62 +18,11 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    private let emailTextField: UITextField = {
-        let textField = UITextField()
-        let spacer = UIView()
-
-        spacer.widthAnchor.constraint(equalToConstant: 12).isActive = true
-
-        textField.leftView = spacer
-        textField.leftViewMode = .always
-        textField.rightView = spacer
-        textField.rightViewMode = .always
-
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.layer.cornerRadius = 8
-        textField.borderStyle = .none
-        textField.textColor = .white
-        textField.keyboardAppearance = .dark
-        textField.keyboardType = .asciiCapable
-        textField.backgroundColor = UIColor(white: 1, alpha: 0.1)
-        textField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        textField.attributedPlaceholder = NSAttributedString(
-            string: "Email",
-            attributes: [.foregroundColor: UIColor(white: 1, alpha: 0.7)]
-        )
-
-        return textField
-    }()
-
-    private let passwordTextField: UITextField = {
-        let textField = UITextField()
-        let spacer = UIView()
-
-        spacer.widthAnchor.constraint(equalToConstant: 12).isActive = true
-
-        textField.leftView = spacer
-        textField.leftViewMode = .always
-        textField.rightView = spacer
-        textField.rightViewMode = .always
-
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        textField.layer.cornerRadius = 8
-        textField.borderStyle = .none
-        textField.textColor = .white
-        textField.keyboardAppearance = .dark
-        textField.keyboardType = .asciiCapable
-        textField.isSecureTextEntry = true
-        textField.backgroundColor = UIColor(white: 1, alpha: 0.1)
-        textField.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        textField.attributedPlaceholder = NSAttributedString(
-            string: "Password",
-            attributes: [
-                .foregroundColor: UIColor.white.withAlphaComponent(0.7)
-            ]
-        )
-
-        return textField
-    }()
+    private let emailTextField = CustomTextField(placeholder: "Email")
+    private let passwordTextField = CustomTextField(
+        placeholder: "Password",
+        isSecure: true
+    )
 
     // MARK: View Lifecycle
 
