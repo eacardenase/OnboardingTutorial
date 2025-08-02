@@ -259,6 +259,12 @@ extension LoginController {
         ])
     }
 
+    func updateForm() {
+        loginButton.isEnabled = viewModel.shouldEnableButton
+        loginButton.backgroundColor = viewModel.buttonBackgroundColor
+        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
+    }
+
 }
 
 // MARK: - Actions
@@ -301,8 +307,8 @@ extension LoginController {
         } else if sender === passwordTextField {
             viewModel.password = sender.text
         }
-        
-        print("DEBUG: Form is valid \(viewModel.formIsValid)")
+
+        updateForm()
     }
 
 }

@@ -5,7 +5,7 @@
 //  Created by Edwin Cardenas on 8/2/25.
 //
 
-import Foundation
+import UIKit
 
 struct LoginViewModel {
 
@@ -15,6 +15,19 @@ struct LoginViewModel {
     var formIsValid: Bool {
         return email?.isEmpty == false
             && password?.isEmpty == false
+    }
+
+    var shouldEnableButton: Bool {
+        formIsValid
+    }
+
+    var buttonTitleColor: UIColor {
+        return formIsValid ? .white : .white.withAlphaComponent(0.67)
+    }
+
+    var buttonBackgroundColor: UIColor {
+        return formIsValid
+            ? .systemPurple : .systemPurple.withAlphaComponent(0.5)
     }
 
 }
