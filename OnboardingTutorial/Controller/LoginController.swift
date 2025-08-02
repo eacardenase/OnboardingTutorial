@@ -11,6 +11,8 @@ class LoginController: UIViewController {
 
     // MARK: - Properties
 
+    private var viewModel = LoginViewModel()
+
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
 
@@ -20,18 +22,34 @@ class LoginController: UIViewController {
         return imageView
     }()
 
-    private let emailTextField: UITextField = {
+    private lazy var emailTextField: UITextField = {
         let textField = CustomTextField(placeholder: "Email")
 
         textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        textField.addTarget(
+            self,
+            action: #selector(textFieldEditingChanged),
+            for: .editingChanged
+        )
 
         return textField
     }()
 
-    private let passwordTextField = CustomTextField(
-        placeholder: "Password",
-        isSecure: true
-    )
+    private lazy var passwordTextField: UITextField = {
+        let textField = CustomTextField(
+            placeholder: "Password",
+            isSecure: true
+        )
+
+        textField.addTarget(
+            self,
+            action: #selector(textFieldEditingChanged),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
 
     private lazy var loginButton: AuthButton = {
         let button = AuthButton(type: .system)
@@ -275,6 +293,16 @@ extension LoginController {
 
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+    }
+
+    @objc private func textFieldEditingChanged(_ sender: UITextField) {
+        if sender === emailTextField {
+            viewModel.email = sender.text
+        } else if sender === passwordTextField {
+            viewModel.password = sender.text
+        }
+        
+        print("DEBUG: Form is valid \(viewModel.formIsValid)")
     }
 
 }
