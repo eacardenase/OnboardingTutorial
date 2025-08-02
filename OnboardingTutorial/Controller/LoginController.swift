@@ -285,8 +285,6 @@ extension LoginController {
                 return
             }
 
-            print("DEBUG: Successfully logged in")
-
             self.dismiss(animated: true)
         }
     }

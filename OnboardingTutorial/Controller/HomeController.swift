@@ -44,6 +44,18 @@ extension HomeController {
         )
     }
 
+    private func presentLoginController() {
+        let loginController = LoginController()
+
+        let navigationController = UINavigationController(
+            rootViewController: loginController
+        )
+
+        navigationController.modalPresentationStyle = .fullScreen
+
+        self.present(navigationController, animated: true)
+    }
+
 }
 
 // MARK: - API
@@ -53,15 +65,7 @@ extension HomeController {
     func authenticateUser() {
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
-                let loginController = LoginController()
-
-                let navigationController = UINavigationController(
-                    rootViewController: loginController
-                )
-
-                navigationController.modalPresentationStyle = .fullScreen
-
-                self.present(navigationController, animated: true)
+                self.presentLoginController()
             }
         }
     }
@@ -70,7 +74,7 @@ extension HomeController {
         do {
             try Auth.auth().signOut()
 
-            authenticateUser()
+            self.presentLoginController()
         } catch {
             print(
                 "DEBUG: Error during signing out with error: \(error.localizedDescription)"
@@ -85,7 +89,24 @@ extension HomeController {
 extension HomeController {
 
     @objc func handleLogOut(_ sender: UIBarButtonItem) {
-        logout()
+        let alertController = UIAlertController(
+            title: nil,
+            message: "Are you sure you want to sign out?",
+            preferredStyle: .actionSheet
+        )
+
+        alertController.addAction(
+            UIAlertAction(title: "Cancel", style: .cancel)
+        )
+        alertController.addAction(
+            UIAlertAction(title: "Sign Out", style: .destructive) {
+                _ in
+
+                self.logout()
+            }
+        )
+
+        present(alertController, animated: true)
     }
 
 }
