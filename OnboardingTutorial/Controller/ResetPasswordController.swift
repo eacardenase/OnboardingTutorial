@@ -11,6 +11,8 @@ class ResetPasswordController: UIViewController {
 
     // MARK: - Properties
 
+    var viewModel = ResetPasswordViewModel()
+
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
 
@@ -35,17 +37,19 @@ class ResetPasswordController: UIViewController {
         return imageView
     }()
 
-    private let emailTextField: UITextField = {
+    private lazy var emailTextField: UITextField = {
         let textField = CustomTextField(placeholder: "Email")
 
         textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        textField.addTarget(
+            self,
+            action: #selector(textFieldEditingChanged),
+            for: .editingChanged
+        )
 
         return textField
     }()
-    private let passwordTextField = CustomTextField(
-        placeholder: "Password",
-        isSecure: true
-    )
 
     private lazy var resetPasswordButton: AuthButton = {
         let button = AuthButton(type: .system)
@@ -84,7 +88,7 @@ extension ResetPasswordController {
 
     private func configureUI() {
         configureGradientBackground()
-        
+
         let stackView = UIStackView(arrangedSubviews: [
             emailTextField,
             resetPasswordButton,
@@ -156,6 +160,27 @@ extension ResetPasswordController {
 
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+    }
+
+    @objc private func textFieldEditingChanged(_ sender: UITextField) {
+        viewModel.email = sender.text
+
+        updateForm()
+    }
+
+}
+
+// MARK: - FormViewModel
+
+extension ResetPasswordController: FormViewModel {
+
+    func updateForm() {
+        resetPasswordButton.isEnabled = viewModel.shouldEnableButton
+        resetPasswordButton.backgroundColor = viewModel.buttonBackgroundColor
+        resetPasswordButton.setTitleColor(
+            viewModel.buttonTitleColor,
+            for: .normal
+        )
     }
 
 }

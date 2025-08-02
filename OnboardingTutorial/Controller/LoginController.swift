@@ -259,12 +259,6 @@ extension LoginController {
         ])
     }
 
-    func updateForm() {
-        loginButton.isEnabled = viewModel.shouldEnableButton
-        loginButton.backgroundColor = viewModel.buttonBackgroundColor
-        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
-    }
-
 }
 
 // MARK: - Actions
@@ -309,6 +303,18 @@ extension LoginController {
         }
 
         updateForm()
+    }
+
+}
+
+// MARK: - FormViewModel
+
+extension LoginController: FormViewModel {
+
+    func updateForm() {
+        loginButton.isEnabled = viewModel.shouldEnableButton
+        loginButton.backgroundColor = viewModel.buttonBackgroundColor
+        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }

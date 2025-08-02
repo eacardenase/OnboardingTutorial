@@ -11,6 +11,8 @@ class RegistrationController: UIViewController {
 
     // MARK: - Properties
 
+    private var viewModel = RegistrationViewModel()
+
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
 
@@ -19,19 +21,41 @@ class RegistrationController: UIViewController {
 
         return imageView
     }()
+    private lazy var fullNametField: UITextField = {
+        let textField = CustomTextField(placeholder: "Fullname")
 
-    private let fullNametField = CustomTextField(placeholder: "Fullname")
-    private let emailTextField: UITextField = {
-        let textField = CustomTextField(placeholder: "Email")
-
-        textField.keyboardType = .emailAddress
+        textField.addTarget(
+            self,
+            action: #selector(textFieldEditingChanged),
+            for: .editingChanged
+        )
 
         return textField
     }()
-    private let passwordTextField = CustomTextField(
-        placeholder: "Password",
-        isSecure: true
-    )
+    private lazy var emailTextField: UITextField = {
+        let textField = CustomTextField(placeholder: "Email")
+
+        textField.keyboardType = .emailAddress
+        textField.autocapitalizationType = .none
+        textField.addTarget(
+            self,
+            action: #selector(textFieldEditingChanged),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
+    private lazy var passwordTextField: UITextField = {
+        let textField = CustomTextField(placeholder: "Password", isSecure: true)
+
+        textField.addTarget(
+            self,
+            action: #selector(textFieldEditingChanged),
+            for: .editingChanged
+        )
+
+        return textField
+    }()
 
     private lazy var signUpButton: AuthButton = {
         let button = AuthButton(type: .system)
@@ -174,6 +198,30 @@ extension RegistrationController {
 
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {
         view.endEditing(true)
+    }
+
+    @objc private func textFieldEditingChanged(_ sender: UITextField) {
+        if sender === emailTextField {
+            viewModel.email = sender.text
+        } else if sender === passwordTextField {
+            viewModel.password = sender.text
+        } else if sender === fullNametField {
+            viewModel.fullName = sender.text
+        }
+
+        updateForm()
+    }
+
+}
+
+// MARK: - FormViewModel
+
+extension RegistrationController: FormViewModel {
+
+    func updateForm() {
+        signUpButton.isEnabled = viewModel.shouldEnableButton
+        signUpButton.backgroundColor = viewModel.buttonBackgroundColor
+        signUpButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
 }

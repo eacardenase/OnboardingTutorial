@@ -27,6 +27,7 @@ class CustomTextField: UITextField {
         textColor = .white
         keyboardAppearance = .dark
         keyboardType = .asciiCapable
+        autocorrectionType = .no
         backgroundColor = UIColor(white: 1, alpha: 0.1)
         isSecureTextEntry = secure
         attributedPlaceholder = NSAttributedString(

@@ -7,15 +7,22 @@
 
 import UIKit
 
-struct LoginViewModel {
+protocol FormViewModel {
+    
+    func updateForm()
+    
+}
 
-    var email: String?
-    var password: String?
+protocol AuthenticationViewModel {
 
-    var formIsValid: Bool {
-        return email?.isEmpty == false
-            && password?.isEmpty == false
-    }
+    var formIsValid: Bool { get }
+    var shouldEnableButton: Bool { get }
+    var buttonTitleColor: UIColor { get }
+    var buttonBackgroundColor: UIColor { get }
+
+}
+
+extension AuthenticationViewModel {
 
     var shouldEnableButton: Bool {
         formIsValid
@@ -32,10 +39,38 @@ struct LoginViewModel {
 
 }
 
-struct RegistrationViewModel {
+struct LoginViewModel: AuthenticationViewModel {
+
+    var email: String?
+    var password: String?
+
+    var formIsValid: Bool {
+        return email?.isEmpty == false
+            && password?.isEmpty == false
+    }
 
 }
 
-struct ResetPasswordViewModel {
+struct RegistrationViewModel: AuthenticationViewModel {
+
+    var email: String?
+    var password: String?
+    var fullName: String?
+
+    var formIsValid: Bool {
+        return email?.isEmpty == false
+            && password?.isEmpty == false
+            && fullName?.isEmpty == false
+    }
+
+}
+
+struct ResetPasswordViewModel: AuthenticationViewModel {
+
+    var email: String?
+
+    var formIsValid: Bool {
+        return email?.isEmpty == false
+    }
 
 }
