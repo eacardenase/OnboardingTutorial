@@ -5,6 +5,7 @@
 //  Created by Edwin Cardenas on 8/1/25.
 //
 
+import FirebaseAuth
 import UIKit
 
 class LoginController: UIViewController {
@@ -266,7 +267,28 @@ extension LoginController {
 extension LoginController {
 
     @objc private func handleLogin(_ sender: UIButton) {
-        print(#function)
+        guard let email = emailTextField.text,
+            let password = passwordTextField.text
+        else {
+            return
+        }
+
+        Auth.auth().signIn(withEmail: email, password: password) {
+            result,
+            error in
+
+            if let error {
+                print(
+                    "DEBUG: Failed to log user in with error: \(error.localizedDescription)"
+                )
+
+                return
+            }
+
+            print("DEBUG: Successfully logged in")
+
+            self.dismiss(animated: true)
+        }
     }
 
     @objc private func showPasswordResetController(_ sender: UIButton) {

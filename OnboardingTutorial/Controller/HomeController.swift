@@ -69,6 +69,8 @@ extension HomeController {
     func logout() {
         do {
             try Auth.auth().signOut()
+
+            authenticateUser()
         } catch {
             print(
                 "DEBUG: Error during signing out with error: \(error.localizedDescription)"
