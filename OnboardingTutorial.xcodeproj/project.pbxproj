@@ -8,6 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		A549A7632E3D1D3F00B3B024 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = A549A7622E3D1D3F00B3B024 /* README.md */; };
+		A549A7B72E3EA0CF00B3B024 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7B62E3EA0CF00B3B024 /* FirebaseAuth */; };
+		A549A7B92E3EA0CF00B3B024 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7B82E3EA0CF00B3B024 /* FirebaseCore */; };
+		A549A7BB2E3EA0CF00B3B024 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7BA2E3EA0CF00B3B024 /* FirebaseDatabase */; };
+		A549A7BD2E3EA0CF00B3B024 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7BC2E3EA0CF00B3B024 /* FirebaseFirestore */; };
+		A549A7C02E3EA0F300B3B024 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7BF2E3EA0F300B3B024 /* GoogleSignIn */; };
+		A549A7C32E3EA10100B3B024 /* PaperOnboarding in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7C22E3EA10100B3B024 /* PaperOnboarding */; };
+		A549A7C62E3EA12300B3B024 /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = A549A7C52E3EA12300B3B024 /* JGProgressHUD */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,6 +48,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A549A7C02E3EA0F300B3B024 /* GoogleSignIn in Frameworks */,
+				A549A7C62E3EA12300B3B024 /* JGProgressHUD in Frameworks */,
+				A549A7BB2E3EA0CF00B3B024 /* FirebaseDatabase in Frameworks */,
+				A549A7C32E3EA10100B3B024 /* PaperOnboarding in Frameworks */,
+				A549A7BD2E3EA0CF00B3B024 /* FirebaseFirestore in Frameworks */,
+				A549A7B92E3EA0CF00B3B024 /* FirebaseCore in Frameworks */,
+				A549A7B72E3EA0CF00B3B024 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +98,13 @@
 			);
 			name = OnboardingTutorial;
 			packageProductDependencies = (
+				A549A7B62E3EA0CF00B3B024 /* FirebaseAuth */,
+				A549A7B82E3EA0CF00B3B024 /* FirebaseCore */,
+				A549A7BA2E3EA0CF00B3B024 /* FirebaseDatabase */,
+				A549A7BC2E3EA0CF00B3B024 /* FirebaseFirestore */,
+				A549A7BF2E3EA0F300B3B024 /* GoogleSignIn */,
+				A549A7C22E3EA10100B3B024 /* PaperOnboarding */,
+				A549A7C52E3EA12300B3B024 /* JGProgressHUD */,
 			);
 			productName = OnboardingTutorial;
 			productReference = A549A73D2E3D186200B3B024 /* OnboardingTutorial.app */;
@@ -113,6 +134,12 @@
 			);
 			mainGroup = A549A7342E3D186200B3B024;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A549A7B52E3EA0CF00B3B024 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				A549A7BE2E3EA0F300B3B024 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				A549A7C12E3EA10100B3B024 /* XCRemoteSwiftPackageReference "paper-onboarding" */,
+				A549A7C42E3EA12300B3B024 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A549A73E2E3D186200B3B024 /* Products */;
 			projectDirPath = "";
@@ -342,6 +369,79 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A549A7B52E3EA0CF00B3B024 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.0.0;
+			};
+		};
+		A549A7BE2E3EA0F300B3B024 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.0.0;
+			};
+		};
+		A549A7C12E3EA10100B3B024 /* XCRemoteSwiftPackageReference "paper-onboarding" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Ramotion/paper-onboarding";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.5;
+			};
+		};
+		A549A7C42E3EA12300B3B024 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A549A7B62E3EA0CF00B3B024 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7B52E3EA0CF00B3B024 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		A549A7B82E3EA0CF00B3B024 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7B52E3EA0CF00B3B024 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		A549A7BA2E3EA0CF00B3B024 /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7B52E3EA0CF00B3B024 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		A549A7BC2E3EA0CF00B3B024 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7B52E3EA0CF00B3B024 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		A549A7BF2E3EA0F300B3B024 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7BE2E3EA0F300B3B024 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		A549A7C22E3EA10100B3B024 /* PaperOnboarding */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7C12E3EA10100B3B024 /* XCRemoteSwiftPackageReference "paper-onboarding" */;
+			productName = PaperOnboarding;
+		};
+		A549A7C52E3EA12300B3B024 /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A549A7C42E3EA12300B3B024 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A549A7352E3D186200B3B024 /* Project object */;
 }
