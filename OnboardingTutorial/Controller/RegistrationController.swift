@@ -5,6 +5,8 @@
 //  Created by Edwin Cardenas on 8/1/25.
 //
 
+import FirebaseAuth
+import FirebaseDatabase
 import UIKit
 
 class RegistrationController: UIViewController {
@@ -189,7 +191,47 @@ extension RegistrationController {
 extension RegistrationController {
 
     @objc private func handleSignUp(_ sender: UIButton) {
-        print(#function)
+        guard let email = emailTextField.text,
+            let password = passwordTextField.text,
+            let fullname = fullNametField.text
+        else {
+            return
+        }
+
+        Auth.auth().createUser(withEmail: email, password: password) {
+            result,
+            error in
+
+            if let error {
+                print(
+                    "DEBUG: Failed to create user with error: \(error.localizedDescription)"
+                )
+
+                return
+            }
+
+            guard let uid = result?.user.uid else { return }
+
+            let values = [
+                "email": email,
+                "fullname": fullname,
+            ]
+
+            Database.database().reference().child("users").child(uid)
+                .updateChildValues(values) { error, ref in
+                    if let error {
+                        print(
+                            "DEBUG: Failed to upload user data with error: \(error.localizedDescription)"
+                        )
+
+                        return
+                    }
+
+                    print(
+                        "DEBUG: Sucessfully created user and uploaded user info."
+                    )
+                }
+        }
     }
 
     @objc private func showLoginController(_ sender: UIButton) {
