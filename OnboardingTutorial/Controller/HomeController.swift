@@ -17,6 +17,7 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        authenticateUser()
         configureUI()
     }
 
@@ -33,7 +34,7 @@ extension HomeController {
 
         navigationItem.title = "Onboarding Tutorial"
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "person")?.withTintColor(
+            image: UIImage(systemName: "person.circle.fill")?.withTintColor(
                 .white,
                 renderingMode: .alwaysOriginal
             ),
@@ -50,14 +51,24 @@ extension HomeController {
 extension HomeController {
 
     func authenticateUser() {
+        if Auth.auth().currentUser == nil {
+            DispatchQueue.main.async {
+                let loginController = LoginController()
 
+                let navigationController = UINavigationController(
+                    rootViewController: loginController
+                )
+
+                navigationController.modalPresentationStyle = .fullScreen
+
+                self.present(navigationController, animated: true)
+            }
+        }
     }
 
     func logout() {
         do {
             try Auth.auth().signOut()
-            
-            print("DEBUG: User signed out")
         } catch {
             print(
                 "DEBUG: Error during signing out with error: \(error.localizedDescription)"
