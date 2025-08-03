@@ -279,7 +279,7 @@ extension LoginController {
             return
         }
 
-        Auth.auth().signIn(withEmail: email, password: password) {
+        AuthService.logUserIn(with: email, password: password) {
             result,
             error in
 
