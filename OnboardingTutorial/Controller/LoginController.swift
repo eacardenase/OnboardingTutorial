@@ -5,8 +5,10 @@
 //  Created by Edwin Cardenas on 8/1/25.
 //
 
-import FirebaseAuth
 import UIKit
+
+import FirebaseAuth
+import GoogleSignIn
 
 class LoginController: UIViewController {
 
@@ -259,6 +261,10 @@ extension LoginController {
             ),
         ])
     }
+    
+    func configureGoogleSignIn() {
+        
+    }
 
 }
 
@@ -299,7 +305,11 @@ extension LoginController {
     }
 
     @objc private func handleGoogleLogin(_ sender: UIButton) {
-        print(#function)
+        GIDSignIn.sharedInstance.signIn(withPresenting: self) { signInResult, error in
+            guard error == nil else { return }
+            
+            print("DEBUG: Handle Google Sign In")
+        }
     }
 
     @objc private func showSignUpController(_ sender: UIButton) {
