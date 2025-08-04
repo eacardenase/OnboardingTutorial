@@ -15,8 +15,21 @@ class HomeController: UIViewController {
     private var user: User? {
         didSet {
             presentOnboardingIfNecessary()
+            showWelcomeLabel()
         }
     }
+
+    private let welcomeLabel: UILabel = {
+        let label = UILabel()
+
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 28)
+        label.text = "Welcome,"
+        label.alpha = 0
+
+        return label
+    }()
 
     // MARK: - View Lifecycle
 
@@ -48,6 +61,14 @@ extension HomeController {
             target: self,
             action: #selector(handleLogOut)
         )
+
+        view.addSubview(welcomeLabel)
+
+        // welcomeLabel
+        NSLayoutConstraint.activate([
+            welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            welcomeLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
     }
 
     private func presentLoginController() {
@@ -73,6 +94,16 @@ extension HomeController {
         controller.modalPresentationStyle = .fullScreen
 
         navigationController?.present(controller, animated: true)
+    }
+
+    private func showWelcomeLabel() {
+        guard let user else { return }
+
+        welcomeLabel.text = "Welcome, \(user.fullname)"
+
+        UIViewPropertyAnimator(duration: 1, curve: .easeIn) {
+            self.welcomeLabel.alpha = 1
+        }.startAnimation()
     }
 
 }
