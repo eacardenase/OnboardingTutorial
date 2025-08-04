@@ -131,4 +131,16 @@ struct AuthService {
         }
     }
 
+    static func updateUserHasSeenOnboarding(
+        completion: @escaping (Error?, DatabaseReference) -> Void
+    ) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        Constants.FirebaseDatabase.REF_USERS.child(uid).child(
+            "hasSeenOnboarding"
+        ).setValue(true, withCompletionBlock: completion)
+    }
+
 }

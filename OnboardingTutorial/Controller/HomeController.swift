@@ -12,7 +12,11 @@ class HomeController: UIViewController {
 
     // MARK: - Properties
 
-    private var shouldShowOnboarding = true
+    private var user: User? {
+        didSet {
+            presentOnboardingIfNecessary()
+        }
+    }
 
     // MARK: - View Lifecycle
 
@@ -58,7 +62,11 @@ extension HomeController {
         self.present(navigationController, animated: true)
     }
 
-    private func presentOnboardingController() {
+    private func presentOnboardingIfNecessary() {
+        guard let user,
+            !user.hasSeenOnboarding
+        else { return }
+
         let controller = OnboardingController()
 
         controller.delegate = self
@@ -81,14 +89,13 @@ extension HomeController {
 
             return
         }
-        
+
         fetchUser()
     }
-    
+
     func fetchUser() {
         AuthService.fetchUser { user in
-            print("DEBUG: Fetch did complete...")
-            print("DEBUG: \(user)")
+            self.user = user
         }
     }
 
@@ -140,9 +147,11 @@ extension HomeController: OnboardingControllerDelegate {
     func controllerWantsToDismiss(_ sender: OnboardingController) {
         sender.dismiss(animated: true)
 
-        shouldShowOnboarding = false
+        AuthService.updateUserHasSeenOnboarding { error, ref in
+            self.user?.hasSeenOnboarding = true
 
-        print("DEBUG: Show onboarding is \(shouldShowOnboarding)")
+            print("DEBUG: Did set has seen onboarding")
+        }
     }
 
 }
