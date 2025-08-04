@@ -12,6 +12,8 @@ class HomeController: UIViewController {
 
     // MARK: - Properties
 
+    private var shouldShowOnboarding = true
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -56,6 +58,15 @@ extension HomeController {
         self.present(navigationController, animated: true)
     }
 
+    private func presentOnboardingController() {
+        let controller = OnboardingController()
+
+        controller.delegate = self
+        controller.modalPresentationStyle = .fullScreen
+
+        navigationController?.present(controller, animated: true)
+    }
+
 }
 
 // MARK: - API
@@ -67,6 +78,12 @@ extension HomeController {
             DispatchQueue.main.async {
                 self.presentLoginController()
             }
+
+            return
+        }
+
+        if shouldShowOnboarding {
+            presentOnboardingController()
         }
     }
 
@@ -107,6 +124,20 @@ extension HomeController {
         )
 
         present(alertController, animated: true)
+    }
+
+}
+
+// MARK: - OnboardingControllerDelegate
+
+extension HomeController: OnboardingControllerDelegate {
+
+    func controllerWantsToDismiss(_ sender: OnboardingController) {
+        sender.dismiss(animated: true)
+
+        shouldShowOnboarding = false
+
+        print("DEBUG: Show onboarding is \(shouldShowOnboarding)")
     }
 
 }

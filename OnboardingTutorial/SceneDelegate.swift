@@ -24,7 +24,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let navigationController: UINavigationController =
             UINavigationController(
-                rootViewController: OnboardingController()
+                rootViewController: HomeController()
             )
 
         navigationController.navigationBar.barStyle = .black

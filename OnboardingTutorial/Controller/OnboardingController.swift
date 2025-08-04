@@ -8,6 +8,12 @@
 import PaperOnboarding
 import UIKit
 
+protocol OnboardingControllerDelegate: AnyObject {
+
+    func controllerWantsToDismiss(_ sender: OnboardingController)
+
+}
+
 class OnboardingController: UIViewController {
 
     // MARK: - Properties
@@ -31,6 +37,8 @@ class OnboardingController: UIViewController {
 
         return button
     }()
+
+    weak var delegate: OnboardingControllerDelegate?
 
     // MARK: - View Lifecycle
 
@@ -149,7 +157,7 @@ extension OnboardingController: PaperOnboardingDataSource {
 extension OnboardingController {
 
     @objc private func dismissOnboarding(_ sender: UIButton) {
-        print("DEBUG: This should not be run")
+        delegate?.controllerWantsToDismiss(self)
     }
 
 }
