@@ -159,10 +159,13 @@ extension OnboardingController {
 extension OnboardingController: PaperOnboardingDelegate {
 
     func onboardingWillTransitonToIndex(_ index: Int) {
-        let isLastOnboardingItem = index == self.onboardingItems.count - 1
+        let viewModel = OnboardingViewModel(itemCount: onboardingItems.count)
+        let shouldShow: Bool = viewModel.shouldShowGetStartedButton(
+            forIndex: index
+        )
 
         UIViewPropertyAnimator(duration: 0.35, curve: .easeInOut) {
-            self.getStartedButton.alpha = isLastOnboardingItem ? 1 : 0
+            self.getStartedButton.alpha = shouldShow ? 1 : 0
         }.startAnimation()
     }
 
