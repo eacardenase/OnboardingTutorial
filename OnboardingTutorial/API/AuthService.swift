@@ -46,9 +46,10 @@ struct AuthService {
             let values = [
                 "email": email,
                 "fullname": fullname,
+                "hasSeenOnboarding": false,
             ]
 
-            Database.database().reference().child("users").child(uid)
+            Constants.FirebaseDatabase.REF_USERS.child(uid)
                 .updateChildValues(values, withCompletionBlock: completion)
         }
     }
@@ -101,11 +102,32 @@ struct AuthService {
                 let values = [
                     "email": email,
                     "fullname": fullname,
+                    "hasSeenOnboarding": false,
                 ]
 
-                Database.database().reference().child("users").child(uid)
+                Constants.FirebaseDatabase.REF_USERS.child(uid)
                     .updateChildValues(values, withCompletionBlock: completion)
             }
+        }
+    }
+
+    static func fetchUser(completion: @escaping (User) -> Void) {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            return
+        }
+
+        Constants.FirebaseDatabase.REF_USERS.child(uid).observeSingleEvent(
+            of: .value
+        ) { snapshot in
+            let uid = snapshot.key
+
+            guard let dictionary = snapshot.value as? [String: Any] else {
+                return
+            }
+
+            let user = User(uid: uid, dictionary: dictionary)
+
+            completion(user)
         }
     }
 

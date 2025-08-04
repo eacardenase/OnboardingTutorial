@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseDatabase
 
 struct Constants {
 
@@ -20,6 +21,11 @@ struct Constants {
             "Everything you need all in one place, available through our dashboard feature"
         static let MSG_ONBOARDING_NOTIFICATIONS =
             "Get notified when important stuff is happening, so you don't miss out on the action"
+    }
+    
+    struct FirebaseDatabase {
+        static let DB_REF = Database.database().reference()
+        static let REF_USERS = DB_REF.child("users")
     }
 
 }

@@ -81,9 +81,14 @@ extension HomeController {
 
             return
         }
-
-        if shouldShowOnboarding {
-            presentOnboardingController()
+        
+        fetchUser()
+    }
+    
+    func fetchUser() {
+        AuthService.fetchUser { user in
+            print("DEBUG: Fetch did complete...")
+            print("DEBUG: \(user)")
         }
     }
 
