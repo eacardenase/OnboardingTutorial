@@ -7,6 +7,7 @@
 
 import FirebaseAuth
 import FirebaseDatabase
+import GoogleSignIn
 
 struct AuthService {
 
@@ -52,8 +53,60 @@ struct AuthService {
         }
     }
 
-    static func signInWithGoogle() {
+    static func signInWithGoogle(
+        withPresenting presentingViewController: UIViewController,
+        completion: @escaping (Error?, DatabaseReference) -> Void
+    ) {
+        GIDSignIn.sharedInstance.signIn(
+            withPresenting: presentingViewController
+        ) {
+            signInResult,
+            error in
 
+            guard error == nil else {
+                return
+            }
+
+            guard let signInResult = signInResult else {
+                return
+            }
+
+            let user = signInResult.user
+
+            guard let userId = user.idToken,
+                let email = user.profile?.email,
+                let fullname = user.profile?.name
+            else {
+                return
+            }
+
+            let credential = GoogleAuthProvider.credential(
+                withIDToken: userId.tokenString,
+                accessToken: user.accessToken.tokenString
+            )
+
+            Auth.auth().signIn(with: credential) { result, error in
+                if let error {
+                    print(
+                        "DEBUG: Failed to sign in with Google: \(error.localizedDescription)"
+                    )
+
+                    return
+                }
+
+                guard let uid = result?.user.uid else {
+                    return
+                }
+
+                let values = [
+                    "email": email,
+                    "fullname": fullname,
+                ]
+
+                Database.database().reference().child("users").child(uid)
+                    .updateChildValues(values, withCompletionBlock: completion)
+            }
+        }
     }
 
 }
