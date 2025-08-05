@@ -283,9 +283,13 @@ extension LoginController {
             return
         }
 
+        showLoader()
+
         AuthService.logUserIn(with: email, password: password) {
             result,
             error in
+
+            self.showLoader(false)
 
             if let error {
                 print(
@@ -312,7 +316,11 @@ extension LoginController {
     }
 
     @objc private func handleGoogleLogin(_ sender: UIButton) {
+        showLoader()
+
         AuthService.signInWithGoogle(withPresenting: self) { error, ref in
+            self.showLoader(false)
+
             self.delegate?.authenticationComplete()
         }
     }
@@ -359,11 +367,11 @@ extension LoginController: FormViewModel {
 // MARK: - ResetPasswordControllerDelegate
 
 extension LoginController: ResetPasswordControllerDelegate {
-    
+
     func didSendResetPasswordLink() {
         navigationController?.popViewController(animated: true)
 
         print("DEBUG: Show success message here...")
     }
-    
+
 }

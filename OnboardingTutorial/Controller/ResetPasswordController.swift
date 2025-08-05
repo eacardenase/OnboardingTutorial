@@ -174,7 +174,11 @@ extension ResetPasswordController {
             return
         }
 
+        showLoader()
+
         AuthService.resetPassword(withEmail: email) { error in
+            self.showLoader(false)
+
             if let error {
                 print(
                     "DEBUG: Error reseting password: \(error.localizedDescription)"

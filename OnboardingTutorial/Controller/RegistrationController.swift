@@ -198,11 +198,15 @@ extension RegistrationController {
             return
         }
 
+        showLoader()
+
         AuthService.registerUserWithFirebase(
             with: email,
             password: password,
             fullname: fullname
         ) { error, ref in
+
+            self.showLoader(false)
 
             if let error {
                 print(

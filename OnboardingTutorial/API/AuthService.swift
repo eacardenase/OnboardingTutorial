@@ -36,9 +36,7 @@ struct AuthService {
             error in
 
             if let error {
-                print(
-                    "DEBUG: Failed to create user with error: \(error.localizedDescription)"
-                )
+                completion(error, Constants.FirebaseDatabase.REF_USERS)
 
                 return
             }
@@ -66,7 +64,9 @@ struct AuthService {
             signInResult,
             error in
 
-            guard error == nil else {
+            if let error {
+                completion(error, Constants.FirebaseDatabase.REF_USERS)
+
                 return
             }
 
@@ -90,9 +90,7 @@ struct AuthService {
 
             Auth.auth().signIn(with: credential) { result, error in
                 if let error {
-                    print(
-                        "DEBUG: Failed to sign in with Google: \(error.localizedDescription)"
-                    )
+                    completion(error, Constants.FirebaseDatabase.REF_USERS)
 
                     return
                 }
