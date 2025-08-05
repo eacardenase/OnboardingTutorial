@@ -27,6 +27,9 @@ class HomeController: UIViewController {
         label.font = .systemFont(ofSize: 28)
         label.text = "Welcome,"
         label.alpha = 0
+        label.numberOfLines = 0
+        label.textAlignment = .center
+        label.lineBreakMode = .byWordWrapping
 
         return label
     }()
@@ -66,8 +69,15 @@ extension HomeController {
 
         // welcomeLabel
         NSLayoutConstraint.activate([
-            welcomeLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             welcomeLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            welcomeLabel.leadingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                constant: 16
+            ),
+            welcomeLabel.trailingAnchor.constraint(
+                equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                constant: -16
+            ),
         ])
     }
 
@@ -138,7 +148,7 @@ extension HomeController {
 
             user = nil
             welcomeLabel.alpha = 0
-            
+
             self.presentLoginController()
         } catch {
             print(

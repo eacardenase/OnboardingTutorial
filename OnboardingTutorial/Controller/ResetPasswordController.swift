@@ -7,11 +7,25 @@
 
 import UIKit
 
+protocol ResetPasswordControllerDelegate: AnyObject {
+
+    func didSendResetPasswordLink()
+
+}
+
 class ResetPasswordController: UIViewController {
 
     // MARK: - Properties
 
     var viewModel = ResetPasswordViewModel()
+    weak var delegate: ResetPasswordControllerDelegate?
+    var email: String? {
+        didSet {
+            viewModel.email = email
+
+            updateForm()
+        }
+    }
 
     private lazy var backButton: UIButton = {
         let button = UIButton(type: .system)
@@ -41,6 +55,7 @@ class ResetPasswordController: UIViewController {
         let textField = CustomTextField(placeholder: "Email")
 
         textField.keyboardType = .emailAddress
+        textField.text = email
         textField.autocapitalizationType = .none
         textField.addTarget(
             self,
@@ -155,7 +170,21 @@ extension ResetPasswordController {
     }
 
     @objc private func handlePasswordReset(_ sender: UIButton) {
-        print(#function)
+        guard let email = viewModel.email else {
+            return
+        }
+
+        AuthService.resetPassword(withEmail: email) { error in
+            if let error {
+                print(
+                    "DEBUG: Error reseting password: \(error.localizedDescription)"
+                )
+
+                return
+            }
+
+            self.delegate?.didSendResetPasswordLink()
+        }
     }
 
     @objc private func dismissKeyboard(_ sender: UITapGestureRecognizer) {

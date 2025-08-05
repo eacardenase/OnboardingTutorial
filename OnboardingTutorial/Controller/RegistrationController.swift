@@ -25,6 +25,7 @@ class RegistrationController: UIViewController {
     private lazy var fullNametField: UITextField = {
         let textField = CustomTextField(placeholder: "Fullname")
 
+        textField.autocapitalizationType = .words
         textField.addTarget(
             self,
             action: #selector(textFieldEditingChanged),

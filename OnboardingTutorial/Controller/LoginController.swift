@@ -302,6 +302,9 @@ extension LoginController {
     @objc private func showPasswordResetController(_ sender: UIButton) {
         let resetPasswordController = ResetPasswordController()
 
+        resetPasswordController.email = emailTextField.text
+        resetPasswordController.delegate = self
+
         navigationController?.pushViewController(
             resetPasswordController,
             animated: true
@@ -351,4 +354,16 @@ extension LoginController: FormViewModel {
         loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
     }
 
+}
+
+// MARK: - ResetPasswordControllerDelegate
+
+extension LoginController: ResetPasswordControllerDelegate {
+    
+    func didSendResetPasswordLink() {
+        navigationController?.popViewController(animated: true)
+
+        print("DEBUG: Show success message here...")
+    }
+    
 }

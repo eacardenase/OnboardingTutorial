@@ -11,6 +11,8 @@ import GoogleSignIn
 
 struct AuthService {
 
+    private init() {}
+
     static func logUserIn(
         with email: String,
         password: String,
@@ -156,6 +158,13 @@ struct AuthService {
         Constants.FirebaseDatabase.REF_USERS.child(uid).child(
             "hasSeenOnboarding"
         ).setValue(true, withCompletionBlock: completion)
+    }
+
+    static func resetPassword(
+        withEmail email: String,
+        completion: @escaping (Error?) -> Void
+    ) {
+        Auth.auth().sendPasswordReset(withEmail: email, completion: completion)
     }
 
 }
