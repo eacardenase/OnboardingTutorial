@@ -185,8 +185,6 @@ extension HomeController: OnboardingControllerDelegate {
 
         AuthService.updateUserHasSeenOnboarding { error, ref in
             self.user?.hasSeenOnboarding = true
-
-            print("DEBUG: Did set has seen onboarding")
         }
     }
 

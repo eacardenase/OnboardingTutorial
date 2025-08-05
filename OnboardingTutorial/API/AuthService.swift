@@ -99,14 +99,29 @@ struct AuthService {
                     return
                 }
 
-                let values = [
-                    "email": email,
-                    "fullname": fullname,
-                    "hasSeenOnboarding": false,
-                ]
-
                 Constants.FirebaseDatabase.REF_USERS.child(uid)
-                    .updateChildValues(values, withCompletionBlock: completion)
+                    .observeSingleEvent(of: .value) { snapshot in
+                        if !snapshot.exists() {
+                            let values = [
+                                "email": email,
+                                "fullname": fullname,
+                                "hasSeenOnboarding": false,
+                            ]
+
+                            Constants.FirebaseDatabase.REF_USERS.child(uid)
+                                .updateChildValues(
+                                    values,
+                                    withCompletionBlock: completion
+                                )
+
+                            return
+                        }
+
+                        completion(
+                            error,
+                            Constants.FirebaseDatabase.REF_USERS.child(uid)
+                        )
+                    }
             }
         }
     }
