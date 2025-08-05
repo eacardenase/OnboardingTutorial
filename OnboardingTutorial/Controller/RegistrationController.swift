@@ -12,6 +12,7 @@ class RegistrationController: UIViewController {
     // MARK: - Properties
 
     private var viewModel = RegistrationViewModel()
+    weak var delegate: AuthenticationDelegate?
 
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
@@ -210,7 +211,7 @@ extension RegistrationController {
                 return
             }
 
-            self.dismiss(animated: true)
+            self.delegate?.authenticationComplete()
         }
     }
 

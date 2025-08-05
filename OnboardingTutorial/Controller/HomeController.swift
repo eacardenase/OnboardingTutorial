@@ -74,6 +74,8 @@ extension HomeController {
     private func presentLoginController() {
         let loginController = LoginController()
 
+        loginController.delegate = self
+
         let navigationController = UINavigationController(
             rootViewController: loginController
         )
@@ -97,7 +99,7 @@ extension HomeController {
     }
 
     private func showWelcomeLabel() {
-        guard let user else { return }
+        guard let user, user.hasSeenOnboarding else { return }
 
         welcomeLabel.text = "Welcome, \(user.fullname)"
 
@@ -134,6 +136,9 @@ extension HomeController {
         do {
             try Auth.auth().signOut()
 
+            user = nil
+            welcomeLabel.alpha = 0
+            
             self.presentLoginController()
         } catch {
             print(
@@ -183,6 +188,18 @@ extension HomeController: OnboardingControllerDelegate {
 
             print("DEBUG: Did set has seen onboarding")
         }
+    }
+
+}
+
+// MARK: - AuthenticationDelegate
+
+extension HomeController: AuthenticationDelegate {
+
+    func authenticationComplete() {
+        dismiss(animated: true)
+
+        fetchUser()
     }
 
 }

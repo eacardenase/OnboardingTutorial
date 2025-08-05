@@ -7,11 +7,18 @@
 
 import UIKit
 
+protocol AuthenticationDelegate: AnyObject {
+
+    func authenticationComplete()
+
+}
+
 class LoginController: UIViewController {
 
     // MARK: - Properties
 
     private var viewModel = LoginViewModel()
+    weak var delegate: AuthenticationDelegate?
 
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
@@ -288,7 +295,7 @@ extension LoginController {
                 return
             }
 
-            self.dismiss(animated: true)
+            self.delegate?.authenticationComplete()
         }
     }
 
@@ -303,12 +310,14 @@ extension LoginController {
 
     @objc private func handleGoogleLogin(_ sender: UIButton) {
         AuthService.signInWithGoogle(withPresenting: self) { error, ref in
-            self.dismiss(animated: true)
+            self.delegate?.authenticationComplete()
         }
     }
 
     @objc private func showSignUpController(_ sender: UIButton) {
         let controller = RegistrationController()
+
+        controller.delegate = delegate
 
         navigationController?.pushViewController(
             controller,
