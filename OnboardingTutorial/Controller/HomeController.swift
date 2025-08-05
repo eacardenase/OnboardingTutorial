@@ -186,8 +186,10 @@ extension HomeController: OnboardingControllerDelegate {
             switch result {
             case .success:
                 self.user?.hasSeenOnboarding = true
-            case .failure(let error):
-                print("DEBUG: Falied to update user with error: \(error)")
+            case let .failure(error):
+                if case .serverError(let message) = error {
+                    self.showMessage(withTitle: "Error", message: message)
+                }
             }
         }
     }

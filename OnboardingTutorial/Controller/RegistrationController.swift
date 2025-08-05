@@ -212,11 +212,9 @@ extension RegistrationController {
             case .success(let user):
                 self.delegate?.authenticationComplete(with: user)
             case let .failure(error):
-                print(
-                    "DEBUG: Failed to upload user data with error: \(error.localizedDescription)"
-                )
-
-                return
+                if case .serverError(let message) = error {
+                    self.showMessage(withTitle: "Error", message: message)
+                }
             }
         }
     }

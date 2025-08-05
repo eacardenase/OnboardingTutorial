@@ -294,9 +294,9 @@ extension LoginController {
             case .success(let user):
                 self.delegate?.authenticationComplete(with: user)
             case let .failure(error):
-                print(
-                    "DEBUG: Failed to log user in with error: \(error.localizedDescription)"
-                )
+                if case .serverError(let message) = error {
+                    self.showMessage(withTitle: "Error", message: message)
+                }
             }
         }
     }
@@ -322,8 +322,10 @@ extension LoginController {
             switch result {
             case .success(let user):
                 self.delegate?.authenticationComplete(with: user)
-            case .failure(let error):
-                print("DEBUG: Failed to log in with Google: \(error)")
+            case let .failure(error):
+                if case .serverError(let message) = error {
+                    self.showMessage(withTitle: "Error", message: message)
+                }
             }
         }
     }
@@ -374,7 +376,10 @@ extension LoginController: ResetPasswordControllerDelegate {
     func didSendResetPasswordLink() {
         navigationController?.popViewController(animated: true)
 
-        print("DEBUG: Show success message here...")
+        self.showMessage(
+            withTitle: "Success",
+            message: "We sent a link to your email to reset your password"
+        )
     }
 
 }

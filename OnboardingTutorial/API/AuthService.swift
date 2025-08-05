@@ -29,6 +29,8 @@ struct AuthService {
         ) { result, error in
             if let error {
                 completion(.failure(.serverError(error.localizedDescription)))
+
+                return
             }
 
             fetchUser(completion: completion)
@@ -139,12 +141,9 @@ struct AuthService {
 
                 fetchUser { result in
                     switch result {
-                    case .failure(let error):
-                        print(
-                            "DEBUG: Failed to fetch user data with error: \(error)"
-                        )
-                        print("DEBUG: Storing Google user in Firebase")
-
+                    case .success(let user):
+                        completion(.success(user))
+                    case .failure:
                         let values = [
                             "email": email,
                             "fullname": fullname,
@@ -155,8 +154,6 @@ struct AuthService {
                             data: values,
                             completion: completion
                         )
-                    case .success(let user):
-                        completion(.success(user))
                     }
                 }
             }

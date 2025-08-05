@@ -180,8 +180,9 @@ extension ResetPasswordController {
             self.showLoader(false)
 
             if let error {
-                print(
-                    "DEBUG: Error reseting password: \(error.localizedDescription)"
+                self.showMessage(
+                    withTitle: "Error",
+                    message: error.localizedDescription
                 )
 
                 return
