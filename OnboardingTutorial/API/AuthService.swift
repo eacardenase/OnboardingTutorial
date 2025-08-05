@@ -9,6 +9,11 @@ import FirebaseAuth
 import FirebaseDatabase
 import GoogleSignIn
 
+enum AuthError: Error {
+    case serverError(String)
+    case decodingError
+}
+
 struct AuthService {
 
     private init() {}
@@ -16,27 +21,44 @@ struct AuthService {
     static func logUserIn(
         with email: String,
         password: String,
-        completion: @escaping (AuthDataResult?, Error?) -> Void
+        completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         Auth.auth().signIn(
             withEmail: email,
-            password: password,
-            completion: completion
-        )
+            password: password
+        ) { result, error in
+            if let error {
+                completion(.failure(.serverError(error.localizedDescription)))
+            }
+
+            fetchUser(completion: completion)
+        }
+    }
+
+    static func logout(completion: @escaping () -> Void) {
+        do {
+            try Auth.auth().signOut()
+
+            completion()
+        } catch {
+            print(
+                "DEBUG: Error during signing out with error: \(error.localizedDescription)"
+            )
+        }
     }
 
     static func registerUserWithFirebase(
         with email: String,
         password: String,
         fullname: String,
-        completion: @escaping (Error?, DatabaseReference) -> Void
+        completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         Auth.auth().createUser(withEmail: email, password: password) {
             result,
             error in
 
             if let error {
-                completion(error, Constants.FirebaseDatabase.REF_USERS)
+                completion(.failure(.serverError(error.localizedDescription)))
 
                 return
             }
@@ -46,17 +68,19 @@ struct AuthService {
             let values = [
                 "email": email,
                 "fullname": fullname,
-                "hasSeenOnboarding": false,
             ]
 
-            Constants.FirebaseDatabase.REF_USERS.child(uid)
-                .updateChildValues(values, withCompletionBlock: completion)
+            signUpFirebaseUser(
+                withUid: uid,
+                data: values,
+                completion: completion
+            )
         }
     }
 
     static func signInWithGoogle(
         withPresenting presentingViewController: UIViewController,
-        completion: @escaping (Error?, DatabaseReference) -> Void
+        completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         GIDSignIn.sharedInstance.signIn(
             withPresenting: presentingViewController
@@ -65,12 +89,16 @@ struct AuthService {
             error in
 
             if let error {
-                completion(error, Constants.FirebaseDatabase.REF_USERS)
-
-                return
+                completion(.failure(.serverError(error.localizedDescription)))
             }
 
-            guard let signInResult = signInResult else {
+            guard let signInResult else {
+                completion(
+                    .failure(
+                        .serverError("DEBUG: Found nil in Google signInResult")
+                    )
+                )
+
                 return
             }
 
@@ -80,6 +108,14 @@ struct AuthService {
                 let email = user.profile?.email,
                 let fullname = user.profile?.name
             else {
+                completion(
+                    .failure(
+                        .serverError(
+                            "DEBUG: Error getting user details from Google"
+                        )
+                    )
+                )
+
                 return
             }
 
@@ -90,7 +126,9 @@ struct AuthService {
 
             Auth.auth().signIn(with: credential) { result, error in
                 if let error {
-                    completion(error, Constants.FirebaseDatabase.REF_USERS)
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
 
                     return
                 }
@@ -99,35 +137,65 @@ struct AuthService {
                     return
                 }
 
-                Constants.FirebaseDatabase.REF_USERS.child(uid)
-                    .observeSingleEvent(of: .value) { snapshot in
-                        if !snapshot.exists() {
-                            let values = [
-                                "email": email,
-                                "fullname": fullname,
-                                "hasSeenOnboarding": false,
-                            ]
-
-                            Constants.FirebaseDatabase.REF_USERS.child(uid)
-                                .updateChildValues(
-                                    values,
-                                    withCompletionBlock: completion
-                                )
-
-                            return
-                        }
-
-                        completion(
-                            error,
-                            Constants.FirebaseDatabase.REF_USERS.child(uid)
+                fetchUser { result in
+                    switch result {
+                    case .failure(let error):
+                        print(
+                            "DEBUG: Failed to fetch user data with error: \(error)"
                         )
+                        print("DEBUG: Storing Google user in Firebase")
+
+                        let values = [
+                            "email": email,
+                            "fullname": fullname,
+                        ]
+
+                        signUpFirebaseUser(
+                            withUid: uid,
+                            data: values,
+                            completion: completion
+                        )
+                    case .success(let user):
+                        completion(.success(user))
                     }
+                }
             }
         }
     }
 
-    static func fetchUser(completion: @escaping (User) -> Void) {
+    static func signUpFirebaseUser(
+        withUid uid: String,
+        data: [String: String],
+        completion: @escaping (Result<User, AuthError>) -> Void
+    ) {
+        let values: [String: Any] = [
+            "email": data["email"] ?? "",
+            "fullname": data["fullname"] ?? "",
+            "hasSeenOnboarding": false,
+        ]
+
+        Constants.FirebaseDatabase.REF_USERS.child(uid)
+            .updateChildValues(values) { error, ref in
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+
+                    return
+                }
+
+                fetchUser(completion: completion)
+            }
+    }
+
+    static func fetchUser(
+        completion: @escaping (Result<User, AuthError>) -> Void
+    ) {
         guard let uid = Auth.auth().currentUser?.uid else {
+            completion(
+                .failure(.serverError("There is no user currently logged in"))
+            )
+
             return
         }
 
@@ -137,17 +205,21 @@ struct AuthService {
             let uid = snapshot.key
 
             guard let dictionary = snapshot.value as? [String: Any] else {
+                print("DEBUG: user not found")
+
+                completion(.failure(.decodingError))
+
                 return
             }
 
             let user = User(uid: uid, dictionary: dictionary)
 
-            completion(user)
+            completion(.success(user))
         }
     }
 
     static func updateUserHasSeenOnboarding(
-        completion: @escaping (Error?, DatabaseReference) -> Void
+        completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         guard let uid = Auth.auth().currentUser?.uid else {
             return
@@ -155,7 +227,13 @@ struct AuthService {
 
         Constants.FirebaseDatabase.REF_USERS.child(uid).child(
             "hasSeenOnboarding"
-        ).setValue(true, withCompletionBlock: completion)
+        ).setValue(true) { error, ref in
+            if let error {
+                completion(.failure(.serverError(error.localizedDescription)))
+            }
+
+            fetchUser(completion: completion)
+        }
     }
 
     static func resetPassword(

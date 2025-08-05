@@ -204,19 +204,20 @@ extension RegistrationController {
             with: email,
             password: password,
             fullname: fullname
-        ) { error, ref in
+        ) { result in
 
             self.showLoader(false)
 
-            if let error {
+            switch result {
+            case .success(let user):
+                self.delegate?.authenticationComplete(with: user)
+            case let .failure(error):
                 print(
                     "DEBUG: Failed to upload user data with error: \(error.localizedDescription)"
                 )
 
                 return
             }
-
-            self.delegate?.authenticationComplete()
         }
     }
 

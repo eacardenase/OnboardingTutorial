@@ -9,7 +9,7 @@ import UIKit
 
 protocol AuthenticationDelegate: AnyObject {
 
-    func authenticationComplete()
+    func authenticationComplete(with user: User)
 
 }
 
@@ -286,20 +286,18 @@ extension LoginController {
         showLoader()
 
         AuthService.logUserIn(with: email, password: password) {
-            result,
-            error in
+            result in
 
             self.showLoader(false)
 
-            if let error {
+            switch result {
+            case .success(let user):
+                self.delegate?.authenticationComplete(with: user)
+            case let .failure(error):
                 print(
                     "DEBUG: Failed to log user in with error: \(error.localizedDescription)"
                 )
-
-                return
             }
-
-            self.delegate?.authenticationComplete()
         }
     }
 
@@ -318,10 +316,15 @@ extension LoginController {
     @objc private func handleGoogleLogin(_ sender: UIButton) {
         showLoader()
 
-        AuthService.signInWithGoogle(withPresenting: self) { error, ref in
+        AuthService.signInWithGoogle(withPresenting: self) { result in
             self.showLoader(false)
 
-            self.delegate?.authenticationComplete()
+            switch result {
+            case .success(let user):
+                self.delegate?.authenticationComplete(with: user)
+            case .failure(let error):
+                print("DEBUG: Failed to log in with Google: \(error)")
+            }
         }
     }
 

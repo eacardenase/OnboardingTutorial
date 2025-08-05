@@ -12,7 +12,7 @@ struct User {
     let uid: String
     let email: String
     let fullname: String
-    var hasSeenOnboarding: Bool
+    var hasSeenOnboarding: Bool = false
 
     init(uid: String, dictionary: [String: Any]) {
         self.uid = uid
@@ -21,4 +21,5 @@ struct User {
         self.fullname = dictionary["fullname"] as? String ?? ""
         self.hasSeenOnboarding = dictionary["hasSeenOnboarding"] as? Bool ?? false
     }
+
 }

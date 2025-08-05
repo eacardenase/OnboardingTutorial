@@ -125,35 +125,24 @@ extension HomeController {
 extension HomeController {
 
     func authenticateUser() {
-        if Auth.auth().currentUser == nil {
-            DispatchQueue.main.async {
-                self.presentLoginController()
+        AuthService.fetchUser { result in
+            switch result {
+            case .success(let user):
+                self.user = user
+            case .failure:
+                DispatchQueue.main.async {
+                    self.presentLoginController()
+                }
             }
-
-            return
-        }
-
-        fetchUser()
-    }
-
-    func fetchUser() {
-        AuthService.fetchUser { user in
-            self.user = user
         }
     }
 
     func logout() {
-        do {
-            try Auth.auth().signOut()
-
-            user = nil
-            welcomeLabel.alpha = 0
+        AuthService.logout {
+            self.user = nil
+            self.welcomeLabel.alpha = 0
 
             self.presentLoginController()
-        } catch {
-            print(
-                "DEBUG: Error during signing out with error: \(error.localizedDescription)"
-            )
         }
     }
 
@@ -193,8 +182,13 @@ extension HomeController: OnboardingControllerDelegate {
     func controllerWantsToDismiss(_ sender: OnboardingController) {
         sender.dismiss(animated: true)
 
-        AuthService.updateUserHasSeenOnboarding { error, ref in
-            self.user?.hasSeenOnboarding = true
+        AuthService.updateUserHasSeenOnboarding { result in
+            switch result {
+            case .success:
+                self.user?.hasSeenOnboarding = true
+            case .failure(let error):
+                print("DEBUG: Falied to update user with error: \(error)")
+            }
         }
     }
 
@@ -204,10 +198,10 @@ extension HomeController: OnboardingControllerDelegate {
 
 extension HomeController: AuthenticationDelegate {
 
-    func authenticationComplete() {
+    func authenticationComplete(with user: User) {
         dismiss(animated: true)
 
-        fetchUser()
+        self.user = user
     }
 
 }
