@@ -6,7 +6,6 @@
 //
 
 import FirebaseAuth
-import FirebaseDatabase
 import GoogleSignIn
 
 enum AuthError: Error {
@@ -21,6 +20,7 @@ struct AuthService {
     static func logUserIn(
         with email: String,
         password: String,
+        useFirestore: Bool = true,
         completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         Auth.auth().signIn(
@@ -33,7 +33,7 @@ struct AuthService {
                 return
             }
 
-            fetchUser(completion: completion)
+            fetchUser(useFirestore: useFirestore, completion: completion)
         }
     }
 
@@ -53,6 +53,7 @@ struct AuthService {
         with email: String,
         password: String,
         fullname: String,
+        useFirestore: Bool = true,
         completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         Auth.auth().createUser(withEmail: email, password: password) {
@@ -75,6 +76,7 @@ struct AuthService {
             signUpFirebaseUser(
                 withUid: uid,
                 data: values,
+                useFirestore: useFirestore,
                 completion: completion
             )
         }
@@ -82,6 +84,7 @@ struct AuthService {
 
     static func signInWithGoogle(
         withPresenting presentingViewController: UIViewController,
+        useFirestore: Bool = true,
         completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         GIDSignIn.sharedInstance.signIn(
@@ -139,7 +142,7 @@ struct AuthService {
                     return
                 }
 
-                fetchUser { result in
+                fetchUser(useFirestore: useFirestore) { result in
                     switch result {
                     case .success(let user):
                         completion(.success(user))
@@ -152,6 +155,7 @@ struct AuthService {
                         signUpFirebaseUser(
                             withUid: uid,
                             data: values,
+                            useFirestore: useFirestore,
                             completion: completion
                         )
                     }
@@ -163,6 +167,7 @@ struct AuthService {
     static func signUpFirebaseUser(
         withUid uid: String,
         data: [String: String],
+        useFirestore: Bool = true,
         completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         let values: [String: Any] = [
@@ -170,6 +175,24 @@ struct AuthService {
             "fullname": data["fullname"] ?? "",
             "hasSeenOnboarding": false,
         ]
+
+        if useFirestore {
+            Constants.FirebaseFirestore.USERS_COLLECTION.document(uid).setData(
+                values
+            ) { error in
+                if let error {
+                    completion(
+                        .failure(.serverError(error.localizedDescription))
+                    )
+
+                    return
+                }
+
+                fetchUser(useFirestore: true, completion: completion)
+            }
+
+            return
+        }
 
         Constants.FirebaseDatabase.REF_USERS.child(uid)
             .updateChildValues(values) { error, ref in
@@ -186,6 +209,7 @@ struct AuthService {
     }
 
     static func fetchUser(
+        useFirestore: Bool = true,
         completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         guard let uid = Auth.auth().currentUser?.uid else {
@@ -196,15 +220,43 @@ struct AuthService {
             return
         }
 
+        if useFirestore {
+            Constants.FirebaseFirestore.USERS_COLLECTION.document(uid)
+                .getDocument { snapshot, error in
+                    if let error {
+                        completion(
+                            .failure(.serverError(error.localizedDescription))
+                        )
+
+                        return
+                    }
+
+                    guard let snapshot,
+                        snapshot.exists,
+                        let userData = snapshot.data()
+                    else {
+                        completion(
+                            .failure(.serverError("User data not found"))
+                        )
+
+                        return
+                    }
+
+                    let user = User(uid: uid, dictionary: userData)
+
+                    completion(.success(user))
+                }
+
+            return
+        }
+
         Constants.FirebaseDatabase.REF_USERS.child(uid).observeSingleEvent(
             of: .value
         ) { snapshot in
             let uid = snapshot.key
 
             guard let dictionary = snapshot.value as? [String: Any] else {
-                print("DEBUG: user not found")
-
-                completion(.failure(.decodingError))
+                completion(.failure(.serverError("User data not found")))
 
                 return
             }
@@ -216,9 +268,31 @@ struct AuthService {
     }
 
     static func updateUserHasSeenOnboarding(
+        useFirestore: Bool = true,
         completion: @escaping (Result<User, AuthError>) -> Void
     ) {
         guard let uid = Auth.auth().currentUser?.uid else {
+            completion(.failure(.serverError("There is not user logged in")))
+
+            return
+        }
+
+        if useFirestore {
+            Constants.FirebaseFirestore.USERS_COLLECTION.document(uid)
+                .updateData([
+                    "hasSeenOnboarding": true
+                ]) { error in
+                    if let error {
+                        completion(
+                            .failure(.serverError(error.localizedDescription))
+                        )
+
+                        return
+                    }
+
+                    fetchUser(completion: completion)
+                }
+
             return
         }
 
@@ -227,9 +301,11 @@ struct AuthService {
         ).setValue(true) { error, ref in
             if let error {
                 completion(.failure(.serverError(error.localizedDescription)))
+
+                return
             }
 
-            fetchUser(completion: completion)
+            fetchUser(useFirestore: false, completion: completion)
         }
     }
 

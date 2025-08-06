@@ -5,8 +5,9 @@
 //  Created by Edwin Cardenas on 8/4/25.
 //
 
-import Foundation
 import FirebaseDatabase
+import FirebaseFirestore
+import Foundation
 
 struct Constants {
 
@@ -22,10 +23,14 @@ struct Constants {
         static let MSG_ONBOARDING_NOTIFICATIONS =
             "Get notified when important stuff is happening, so you don't miss out on the action"
     }
-    
+
     struct FirebaseDatabase {
         static let DB_REF = Database.database().reference()
         static let REF_USERS = DB_REF.child("users")
+    }
+
+    struct FirebaseFirestore {
+        static let USERS_COLLECTION = Firestore.firestore().collection("users")
     }
 
 }
